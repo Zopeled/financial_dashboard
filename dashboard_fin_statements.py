@@ -70,7 +70,7 @@ rows = html.Div(
                 dbc.Col(html.Div(dcc.Graph(id='rnd_expenses')), width=3),
                 dbc.Col(html.Div(dcc.Graph(id='operating_expenses')), width=3),
                 dbc.Col(html.Div(dcc.Graph(id='interest_expense')), width=3),
-                dbc.Col(html.Div(dcc.Graph(id='earnings_before_tax')), width=3),
+                dbc.Col(html.Div(dcc.Graph(id='income_tax_expense')), width=3),
 
             ]
         ),
@@ -464,6 +464,61 @@ def retrieve_dividend_per_share(company):
         count += 1
     datapoints = {'data': [go.Bar(x=dates, y=financials, marker_color='lightsalmon', name='Dividend per Share')],
                   'layout': dict(xaxis={'title': 'Date'}, yaxis={'title': 'Dividend per Share'}, )}
+    return datapoints
+
+
+# Expenses
+@app.callback(Output('rnd_expenses', 'figure'), [Input('company_selection', 'value')])
+def retrieve_rnd_expenses(company):
+    # demo = 'b4ec5eef495822971cbf5b88277edbf2'
+    req = requests.get(f'https://financialmodelingprep.com/api/v3/financials/income-statement/{company}?apikey=demo')
+    req = req.json()
+    req = req['financials']
+    financials = []
+    dates = []
+    count = 0
+    for item in req:
+        financials.append(float(req[count]['R&D Expenses']))
+        dates.append(req[count]['date'])
+        count += 1
+    datapoints = {'data': [go.Bar(x=dates, y=financials, marker_color='lightsalmon', name='R&D Expenses')],
+                  'layout': dict(xaxis={'title': 'Date'}, yaxis={'title': 'R&D Expenses'}, )}
+    return datapoints
+
+
+@app.callback(Output('operating_expenses', 'figure'), [Input('company_selection', 'value')])
+def retrieve_operating_expenses(company):
+    # demo = 'b4ec5eef495822971cbf5b88277edbf2'
+    req = requests.get(f'https://financialmodelingprep.com/api/v3/financials/income-statement/{company}?apikey=demo')
+    req = req.json()
+    req = req['financials']
+    financials = []
+    dates = []
+    count = 0
+    for item in req:
+        financials.append(float(req[count]['Operating Expenses']))
+        dates.append(req[count]['date'])
+        count += 1
+    datapoints = {'data': [go.Bar(x=dates, y=financials, marker_color='lightsalmon', name='Operating Expenses')],
+                  'layout': dict(xaxis={'title': 'Date'}, yaxis={'title': 'Operating Expenses'}, )}
+    return datapoints
+
+
+@app.callback(Output('income_tax_expense', 'figure'), [Input('company_selection', 'value')])
+def retrieve_income_tax_expense(company):
+    # demo = 'b4ec5eef495822971cbf5b88277edbf2'
+    req = requests.get(f'https://financialmodelingprep.com/api/v3/financials/income-statement/{company}?apikey=demo')
+    req = req.json()
+    req = req['financials']
+    financials = []
+    dates = []
+    count = 0
+    for item in req:
+        financials.append(float(req[count]['Income Tax Expense']))
+        dates.append(req[count]['date'])
+        count += 1
+    datapoints = {'data': [go.Bar(x=dates, y=financials, marker_color='lightsalmon', name='Income Tax Expense')],
+                  'layout': dict(xaxis={'title': 'Date'}, yaxis={'title': 'Income Tax Expense'}, )}
     return datapoints
 
 
