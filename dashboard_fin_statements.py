@@ -504,6 +504,24 @@ def retrieve_operating_expenses(company):
     return datapoints
 
 
+@app.callback(Output('interest_expense', 'figure'), [Input('company_selection', 'value')])
+def retrieve_interest_expense(company):
+    # demo = 'b4ec5eef495822971cbf5b88277edbf2'
+    req = requests.get(f'https://financialmodelingprep.com/api/v3/financials/income-statement/{company}?apikey=demo')
+    req = req.json()
+    req = req['financials']
+    financials = []
+    dates = []
+    count = 0
+    for item in req:
+        financials.append(float(req[count]['Interest Expense']))
+        dates.append(req[count]['date'])
+        count += 1
+    datapoints = {'data': [go.Bar(x=dates, y=financials, marker_color='lightsalmon', name='Interest Expense')],
+                  'layout': dict(xaxis={'title': 'Date'}, yaxis={'title': 'Interest Expense'}, )}
+    return datapoints
+
+
 @app.callback(Output('income_tax_expense', 'figure'), [Input('company_selection', 'value')])
 def retrieve_income_tax_expense(company):
     # demo = 'b4ec5eef495822971cbf5b88277edbf2'
